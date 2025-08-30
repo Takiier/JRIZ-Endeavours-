@@ -1,0 +1,554 @@
+JDBC (Java Database Connectivity):
+7 Steps: // Use in every java file
+1) Import the package (import java.sql.*;)
+2) Load & Register the Driver (Class.forName("com.mysql.cj.jdbc.Driver");)
+3) Establish the Connection (Connection con = DriverManager.getConnection(dburl, dbuser, dbpass);)
+4) Create Statement (
+		Statement stmt = con.createStatement(); //Use to execute a query
+		PreparedStatement stmt = con.prepareStatement(query); // If you have predefined query, have different values, or like a procedure, Use to make updating, inserting, and deleting cmds much easier to use
+		CallableStatements // PL(Programming Procedural Language) for stored procedures
+)
+5) Execute the query (ResultSet rs = stmt.executeQuery(query); OR  int count = stmt.executeUpdate();)
+6) Process the results
+7) Close
+
+7 Steps Code:
+1)import java.sql.*;
+
+	main(){
+ 	  2)  Class.forName("com.mysql.cj.jdbc.Driver"); //Responsible to load and register driver using the registerDriver that is defined in the Class.forName 
+          3)  Connection con = DriverManager.getConnection(db_url, db_user, db_pass); // Creates the connection from database to java
+          4) Statement stmt = con.createStatement(); // Make a statement
+          5) ResultSet rs = stmt.executeQuery(query); // Execute a fetching query from the database and store it at the ResultSet object
+	  6) rs.next(); // Set the pointer to the first row of the table
+	  7) stmt.close();
+	     con.close(); //Close the connection and disable the statement
+}
+Static and Instance Block: // If you load the class like declaring it, the class will run and check if there is any static and instance then it will run it
+Static{
+	System.out.print("Damn");
+}
+Instance{
+	System.out.print("Damn");
+}
+
+DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver()); // It's basically the same thing as Class.forName but used to manually register a driver
+
+rs.next(); // Set the pointer to the first row of the table AND check if you have the next line (Use a Loop to navigate all the rows)
+rs.getString(1 <Column-Number>); // Get string from the 1st column
+rs.getInt(1 <Column-Number>); // Get int from the 2st column
+PreparedStatement  st = con.prepareStatement(query);    // If you have predefined query, have different values, or like a procedure, Use to make updating, inserting, and deleting cmds much easier to use
+st.setInt( 1 <Column-Number>, <Variable or value>);     // Use to insert data into table using the column as indicator
+st.setString( 2 <Column-Number>, <Variable or value>);  // Use to insert data into table using the column as indicator
+
+MySQL Commands:
+
+Database Commands:
+
+DDL (Data Differential Language) - Changing the structure of your database i.e adding tables
+DML (Data Manipulation Language)- Change the values of the table i.e updating existing data, deleting existing row, inserting data //.executeUpdate()
+DQL (Data Query Language)- Fetching data //.executeQuery();
+TCL (Transaction Control Language) - Grant permision or revoke permission
+
+SET SQL_SAFE_UPDATES = 0; // Turn off safe mode
+
+CREATE DATABASE <Name>; // Create .DB
+DROP DATABASE <Name>; //Delete DB
+USE <Name>; // Use OR Select DB OR just click the schema directly
+ALTER DATABASE <Name> READ ONLY = 1; // Makes the database read-only and can't make any adjustments (= 0, to revert editable)
+
+Tables Commands:
+
+CREATE TABLE <Name> (
+	<Column-Name> INT,
+	<Column-Name> VARCHAR(Max_Characters i.e 50),
+	<Column-Name> DECIMAL(Max_Decimal, Precision i.e 5, 2),
+	<Column-Name> DATE,
+);
+
+[RENAME TABLE:
+ALTER TABLE old_table_name
+RENAME TO new_table_name;
+]
+
+SELECT * FROM <Table-Name>; // Selects and view the entire table, (*) MEANS ALL
+RENAME TABLE <Orig-Name> TO <New Name>; //Rename Table
+DROP TABALE <Table-Name>; //Delete Table
+
+[EDIT TABLE:
+ALTER TABLE <Table-Name> // Put this in the first line to be effective, Makes the column editable
+ADD <Column Name> VARCHAR(15); // Add new Column
+RENAME COLUMN <Old-C-Name> to <New-C-Name>; // Rename existing Column
+MODIFY COLUMN <Column-Name> <Data-type>(#); //Edit size of the column(i.e Column VARCHAR(100))
+]
+
+[MOVE TABLES:
+ALTER TABLE <Table-Name> // Put this in the first line to be effective, Makes the column editable
+MODIFY COLUMN <Column-Name> <Data-type>(#)
+AFTER <Column-Name>; //Move a column after an existing column
+FIRST; //Move the column to the first
+]
+
+[DROP TABLES:
+ALTER TABLE <Table-Name> // Put this in the first line to be effective, Makes the column editable
+DROP COLUMN <Column-Name>;
+]
+
+Row Commands:
+
+[Insert  Values to tables rows:
+INSERT INTO <Table-Name> // (<Column-Name>, <Column-Name>, <Column-Name>,) //If you want to only add content to specific columns
+VALUES	(<Column1>, <Column2>, ...), 
+	(<Column1>, <Column2>, ...), // If Multiple
+	(<Column1>, <Column2>, ...); // If Multiple
+]
+
+Select Commands:
+
+SELECT * FROM <Table-Name>; // Selects and view the entire table, (*) MEANS ALL
+
+[SELECT A SPECIFIC COLUMN:
+SELECT (<Column-Name>), (<Column-Name>) // If multiple
+FROM <Table-Name>;
+]
+
+[SPECIFIC SELECTION:
+SELECT *
+FROM <Table-Name>
+WHERE <Column-Name> = <Value>; // Select the row where the info is provided (>= can use relational)
+WHERE <Column-Name> IS NULL; // Select the where there is no value in a column
+]
+
+Update and Delete Commands:
+
+[SPECIFIC UPDATE TABLE:
+UPDATE <Table-Name>
+SET <Column-Name> = <Value>, // Update the table OR set the value to NULL to delete
+<Column-Name> = <Value> // If multiple OR set the value to NULL to delete
+WHERE <Column-Name> = <Value>; // Locate where the update should go
+]
+
+[UPDATE TABLE ALL COLUMN:
+UPDATE <Table-Name>
+SET <Column-Name> = <Value>, // Update the table OR set the value to NULL to delete
+]
+
+[DELETE A ROW:
+DELETE FROM <Table-Name> // Use WHERE in order not to delete the entire table
+WHERE <Column-Name> = <Value>; //Delete the entire row that has this info
+]
+
+AutoCommit, Commit, and RollBack Commands:
+
+SET AUTOCOMMIT = OFF; // Set to manually change every changes
+COMMIT; // Use to save the current changes OR serves as a checkpoint
+ROLLBACK; //Return to the last saved checkpoint (Used when oopsies happen)
+
+Current Date & Time Commands:
+Data type: DATE, TIME, AND DATETIME
+
+[USE OF DATE….:
+INSERT INTO <Table-Name> // Adds content to table
+VALUES(CURRENT_DATE(), CURRENT_TIME, NOW()); // Set the COLUMN values into
+current date…..
+VALUES(CURRENT_DATE() + 1, NULL, NULL); // If +1 refers to tomorrow, NULL to empty the
+value of a column
+SELECT * FROM <Table-Name>;
+]
+
+Unique Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type> UNIQUE // Content must be unique and can't be the same
+);
+
+]
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS
+UNIQUE(<Column-Name>}; // Set the table so that the contents have to be unique and can't be the same.
+]
+
+Not Null Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type> NULL // Cannot be set to NULL
+);
+
+[
+ALTER TABLE <Table-Name>
+MODIFY <Column-Name> <Data-Type>() NULL; // Content cannot be set to NULL
+]
+
+Check Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type>,
+<Column-Name> <Data-Type>,
+CHECK(<Condition> i.e <Column-Name> >= 2); // Return error if the condition is not met
+);
+
+[
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS <Constraint-Name> CHECK(<Condition> i.e <Column-Name> >= 2); // Return error if the condition is not met
+]
+
+Default Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type>,
+<Column-Name> <Data-Type> DEFAULT <Value>, // Use to set a default value incase an empty row is created
+<Column-Name> <Data-Type> DEFAULT NOW(), // Use to set a default value of the current time and date
+);
+
+[
+ALTER TABLE <Table-Name>
+ALTER <Column-Name> SET DEFAULT<Value>; // Use to set a default value incase an empty row is created
+]
+
+Primary Key Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type>,
+<Column-Name> <Data-Type> PRIMARY KEY, // Must be UNIQUE and NOT NULL i.e like a social security number
+);
+
+[
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS
+PRIMARY KEY(<Column-Name>); //Must be UNIQUE and NOT NULL i.e like a social security number
+]
+
+Auto Increment Commands:
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type>,
+<Column-Name> <Data-Type> PRIMARY KEY AUTO_INCREMENT, // Increments thevalue by 1 for every value or content you add to a row, starts at 1 (Must be set to PRIMARY KEY to use)
+);
+
+[
+ALTER TABLE <Table-Name>
+AUTO_INCREMENT = <Value>; // Increments the value by 1 for every value or content you add to a row, can be set where to start counting from(Must be set to PRIMARY KEY to use)
+]
+
+Foreign Key:
+// Foreign Key creates a connection between two columns in a separate tables 
+(Links 2 tables and can't make changes to columns unless the link is broken)
+
+
+CREATE TABLE <Table-Name>(
+<Column-Name> <Data-Type>,
+<Column-Name> <Data-Type> PRIMARY KEY AUTO_INCREMENT,
+FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>)
+);
+
+[
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS <New-FK-Name>;
+FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>);
+]
+
+Joins Commands:
+
+Inner JOINS: Creates a joint or merge between 2 tables based on the similarities in value of their FK Columns (Doesn't show if it does not have any similarities)
+Left JOINS: Shows a joint or merge of two tables but shows all the data from the left table despite not having a match or similarities to the other table.
+Right JOINS: Shows a joint or merge of two tables but shows all the data from the right table despite not having a match or similarities to the other table.
+
+[Left] INNER JOIN [Right] // Visual for who is going to be put on the right and left
+
+INNER JOIN:
+SELECT <Column-Names>, <Column-Names> // Specifies which columns to show when joining
+together
+FROM <Table-Name> INNER JOIN <Table-Name>
+ON <L-Table-Name>.<FK-Column-Name> = <R-Table-Name>.<FK-Column-Name>;
+
+LEFT JOIN:
+SELECT *
+FROM <Table-Name> LEFT JOIN <Table-Name>
+ON <L-Table-Name>.<FK-Column-Name> = <R-Table-Name>.<FK-Column-Name>;
+
+RIGHT JOIN:
+SELECT *
+FROM <Table-Name> LEFT JOIN <Table-Name>
+ON <L-Table-Name>.<FK-Column-Name> = <R-Table-Name>.<FK-Column-Name>;
+
+Functions:
+
+SELECT COUNT(<Column-Name>) AS <Column-Name> // returns how many data are in this column i.e 5
+FROM <Table-Name>;
+
+SELECT MAX(<Column-Name>) AS <Column-Name> // returns the maximum in the list of data i.e 5
+FROM <Table-Name>;
+
+SELECT MIN(<Column-Name>) AS <Column-Name> // returns the minimum in the list of data i.e 5
+FROM <Table-Name>;
+
+SELECT AVG(<Column-Name>) AS <Column-Name> // returns the average in the list of data i.e 5
+FROM <Table-Name>;
+
+SELECT SUM(<Column-Name>) AS <Column-Name> // returns the total amount combined in the list of data i.e 5
+FROM <Table-Name>;
+
+SELECT CONCAT(<Column-Name>, “ ”, <Column-Name>) AS <Column-Name> // Returns the merge version of two different data in the list i.e “Krabs Eugene” (Use “ ” to put space in between)
+FROM <Table-Name>;
+
+Logical Operators (AND, OR, NOT):
+
+SELECT *
+FROM <Table-Name>
+WHERE <Column-Name> > “Value” AND <Column-Name> = “Value”;
+
+SELECT *
+FROM <Table-Name>
+WHERE <Column-Name> = “Value” OR <Column-Name> = “Value”;
+
+SELECT *
+FROM <Table-Name>
+WHERE NOT <Column-Name> = “Value” AND NOT <Column-Name> = “Value”;
+
+SELECT *
+FROM <Table-Name>
+WHERE BETWEEN “Value” AND “Value”; // Shows the row that has fit the criteria between two values i.e “June 12, 2005” AND “June 12, 2025”
+
+SELECT *
+FROM <Table-Name>
+WHERE <Column-Name> IN (“Value”, “Value”); // Shows the row where there is a similar value
+
+Wild Card Characters Commands:
+
+// % - Represents any number of characters
+// _ - Represents 1 random letter
+
+SELECT * FROM <Table-Names>
+WHERE <Column-Name> LIKE “sp%”; // Return any data that has the first 2 letter as ‘sp’
+
+SELECT * FROM <Table-Names>
+WHERE <Column-Name> LIKE “%s”; // Return any data that has the last letter as ‘s’
+
+SELECT * FROM <Table-Names>
+WHERE <Column-Name> LIKE “_ook”; // It will guess the first letter based on the given letter after it to find the data in the table
+
+SELECT * FROM <Table-Names>
+WHERE <Column-Name> LIKE “_a%”; // It will guess the first letter based on the 2nd letter and shows the data that match the 2nd letter
+
+Order by Commands:
+
+SELECT * FROM <Table-Names>
+ORDER BY <Column-Name>; // Default: Ascending Order (1-5) or Alphabetical Order (ASC)
+
+
+SELECT * FROM <Table-Names>
+ORDER BY <Column-Name> DESC; // Reverse Order (5-1) or Reverse Alphabetical Order
+
+SELECT * FROM <Table-Names>
+ORDER BY <Column-Name>, <Column-Name>; // Use other column to compare and use as basis for the order
+
+Limit Commands:
+// LIMIT clause is used to limit the number of records
+// Useful if you're working with  a lot of data 
+// Can be used to display a large data on pages (pagination)
+
+SELECT * FROM <Table-Names>
+LIMIT 2; // Use to limit how many records are returned or shown (first 2 data are shown)
+
+SELECT * FROM <Table-Names>
+ORDER BY <Column-Name>  (DESC/ASC) LIMIT 2; // Use to limit how many records are returned or shown AND  based on their order(first 2 data are shown)
+
+SELECT * FROM <Table-Names>
+LIMIT 2, 1; // Use to off set the first 2 data and show the 1 data after the first 2 data that are off set (1 -2 = X, 3 = Shown)
+
+Union Commands:
+// UNION combines the results of two or more SELECT  statements (could be Tables)
+// Can't use UNION if the tables does not have the same amount of columns but can be specify
+
+SELECT * FROM <Table-Names>
+UNION
+SELECT * FROM <Table-Names>;  // Shows the data combined from 2 tables and the first column from table (1) is the header 
+
+SELECT <Column-Name> FROM <Table-Names>
+UNION (ALL) // Use to show all data even the duplicated data in the table or column
+SELECT <Column-Name>  FROM <Table-Names>;  // Shows the column data combined from the other tables column (Use for specific showing of data)
+
+Self Join Commands:
+// SELF JOIN makes a copy of the Table of itself and combines the two tables in the data 
+// Used to compare rows of the same table
+// Helps to display a heirarchy of data
+// AS <Nick> - nickname
+// LEFT/RIGHT JOIN  to show data the has null value if its in the left/right
+
+SELECT *
+FROM <Table-Name> AS <Nick>
+INNER JOIN <Table-Name> AS <Nick>
+ON <Nick>.<Column-Name> = <Nick>.<Column-Name>; // Made a copy of the table and linked two tables as the bases
+
+SELECT  <Nick>.<Column-Name>,  <Nick>.<Column-Name>,  <Nick>.<Column-Name>,
+                CONCAT(<Nick>.<Column-Name>, " ",  <Nick>.<Column-Name>) AS <Nick> // Makes a new column based on the link of the two columns and display the two contents as its data i.e (Referred_by: First_Name Last_Name (1))
+FROM <Table-Name> AS <Nick>
+INNER JOIN <Table-Name> AS <Nick>
+ON <Nick>.<Column-Name> = <Nick>.<Column-Name>; // Made a copy of the table and linked two tables as the bases
+
+Views Commands:
+// Virtual table based on the result-set of an SQL statement
+// The fields in a view are fields from one or more real tables in the database
+//They're not real tables, but can be interacted with as if they were
+// Use to make make duplication of the same data instead of making 2 tables that has the same data
+// Updated automatically if changes are made from the original table
+
+CREATE VIEW <View-Name> AS
+SELECT <Column-Name>, <Column-Name>
+FROM <Table-Name>; // Creates a view/duplication of the selected columns from a table
+
+DROP VIEW <View-Name>; //Delete View
+
+Indexes Commands:
+// INDEX (BTree Data Structure)
+// Indexes are used to find values within a specific column more quickly
+// MySQL normally searches sequentially through a column
+// The longer the column, the more expensive the operations is
+// UPDATE takes more tim, SELECT takes less time
+
+SHOW INDEXES FROM <Table-Name>;  //Show how many indexes are created
+
+CREATE INDEX <Index-Name>
+ON <Table-Name>(<Column-Name>);  //Used to make searching of data from a column  much faster just based on its value
+
+CREATE INDEX <Index-Name>
+ON <Table-Name>(<Column-Name>, <Column-Name>);  //Used to make searching of data from a columns  much faster just based on the value of the two columns combined if it matchs
+
+SELECT * FROM <Table-Name>
+WHERE <Column-Name> = <Value> AND <Column-Name> = <Value> ;
+
+Subqueries Commands:
+// Query or Commands
+
+SELECT <Column>,  <Column>, <Column>
+FROM <Table>
+WHERE <Column>  < (SELECT AVG(hourly_pay) FROM Employees); // Basically a command encapsulated by a parenthesis
+
+
+SELECT <Column>,  <Column>, <Column>
+FROM <Table>
+WHERE <Column>  IN // has the value
+(SELECT DISTINCT <Column>
+FROM <Table>
+WHERE <Column> IS NOT NULL);
+
+
+Group by Commands:
+// Aggregate(Combine) all rows by a specific column
+// Often used with aggregate functions ex. SUM(), MAX()....
+
+SELECT SUM(<Column>), <Column>
+FROM <Table>
+GROUP BY <Column>; // Shows the combined amount of 1 column based on the same data's in the column (i.e dates)
+
+SELECT SUM(<Column>), <Column>
+FROM <Table>
+GROUP BY <Column>
+HAVING COUNT(<Column> > 1; // Use to replace WHERE
+
+Roll up Commands: 
+// Extention of the GROUP BY clause
+// produces another row and shows the GRAND TOTAL (Super-aggregate value)
+
+SELECT SUM(<Column>), <Column>
+FROM <Table>
+GROUP BY <Column> WITH ROLLUP; //Creates a new row that has the GRAND TOTAL amount 
+
+On Delete Commands:
+// ON DELETE SET NULL - When a FK is deleted, replace FK with NULL
+// ON DELETE CASCADE - When a  FK is deleted, delete row
+
+CREATE TABLE <Table-Name>(
+	<Column-Name> <Data-Type>,
+	<Column-Name> <Data-Type> PRIMARY KEY AUTO_INCREMENT,
+	FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>)
+	ON DELETE SET NULL
+);
+
+[
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS <New-FK-Name>
+FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>)
+ON DELETE SET NULL
+]
+
+CREATE TABLE <Table-Name>(
+	<Column-Name> <Data-Type>,
+	<Column-Name> <Data-Type> PRIMARY KEY AUTO_INCREMENT,
+	FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>)
+	ON DELETE CASCADE
+);
+
+[
+ALTER TABLE <Table-Name>
+ADD CONSTRAINTS <New-FK-Name>
+FOREIGN KEY(<Column-Name>) REFERENCES <Table-Name>(<Column-Name>)
+ON DELETE CASCADE;
+]
+
+Stored Procedure Commands:
+// Is prepared SQL code that you can save, great if there's a query/command that you write often
+// Like methods/function in programming
+
+[CREATE PROCEDURE: 
+DELIMITER $$ //Set the end of every command from ; to $$ since we can't have 2 semi-colon in 1 query
+CREATE PROCEDURE <SPN>()
+BEGIN
+	SELECT * FROM <Table>; // Query OR Code
+END $$
+DELIMITER ; // Recognizes the semi-colon used inside the procedure
+]
+
+CALL <Stored-Procedure-Name>();
+
+ DROP PROCEDURE <SPN>;
+
+[DOING PROCEDURE: 
+DELIMITER $$ //Set the end of every command from ; to $$ since we can't have 2 semi-colon in 1 query
+CREATE PROCEDURE <SPN>(IN f_name VARCHAR(50),
+		              IN l_name VARHAR(50))
+
+BEGIN
+	SELECT * 
+	FROM <Table>
+	WHERE first_name = f_name AND last_name = l_name; // Query OR Code
+END $$
+DELIMITER ; // Recognizes the semi-colon used inside the procedure
+]
+
+EX CALL OUTPUT:
+CALL <Stored-Procedure-Name>("LARRY", "LOBSTER');
+
+Trigger Commands:
+// When an event happens, do something  EX. (INSERT, UPDATE, DELETE)
+// Checks data, hand;e errors, auditing tables
+// BEFORE - A BEFORE trigger is executed before the triggering event occurs on each row affected by the statement.
+// AFTER - Timing: An AFTER trigger is executed after the triggering event has been successfully completed for each affected row.
+
+[UPDATE BEFORE:
+CREATE TRIGGER <Trigger-Name>
+BEFORE UPDATE ON <Table>
+FOR EACH ROW
+SET NEW.<Column> =  NEW.(hourly_pay *2080);
+]
+
+
+[DELETE AFTER:
+CREATE TRIGGER <Trigger-Name>
+AFTER DELETE ON <Table>
+FOR EACH ROW
+UPDATE <Table>
+SET <Column> =  <column> - OLD.<Column>;
+WHERE <Column> = <value>;
+]
+
+[INSERT AFTER:
+CREATE TRIGGER <Trigger-Name>
+AFTER INSERT ON <Table>
+FOR EACH ROW
+UPDATE <Table>
+SET <Column> =  <column> +  NEW.<Column>;
+WHERE <Column> = <value>;
+]
+
+
